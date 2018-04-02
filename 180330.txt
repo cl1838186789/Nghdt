@@ -1,0 +1,228 @@
+
+
+
+----Integer和int的区别
+1.Integer是int提供的封装类，而int是Java的基本数据类型；
+2.Integer默认值是null，而int默认值是0；
+3.声明为Integer的变量需要实例化，而声明为int的变量不需要实例化；
+4.Integer实际是对象的引用，当new一个Integer时，实际上是生产一个指针指向此对象；而int则是直接存储数据值。
+
+
+
+----&和&&的区别
+Java中&和&&都是表示与的逻辑运算符and，当两边的表达式都为true的时候，整个运算结果才为true，否则为false。
+&&的短路功能，当第一个表达式的值为false的时候，则不再计算第二个表达式，&则两个表达式都执行。
+&可以用作位运算符，当&两边的表达式不是Boolean类型的时候，&表示按位操作。
+
+
+
+----Math.round(11.5)等于多少？Math.round(-11.5)等于多少？
+12	-11
+Math.ceil()向上取整；
+Math.floor()向下取整；
+Math.round()加0.5再向下取整。
+
+
+
+----用最有效率的方法计算2乘以8
+2<<3
+
+
+
+----String和StringBuilder、StringBuffer的区别
+1.String内容不可变，StringBuffer和StringBuffer内容可变；
+2.StringBuilder非线程安全（单线程使用），String与StringBuffer线程安全（多线程使用）；
+3.如果程序不是多线程的那么使用StringBuilder效率高于StringBuffer。
+https://blog.csdn.net/chenliguan/article/details/51911906
+
+
+
+----描述一下JVM加载class文件的原理机制？
+1.装载：查找和导入class文件；
+2.连接：
+	（1）检查：检查载入的class文件数据的正确性；
+	（2）准备：为类的静态变量分配存储空间：
+	（3）解析：将符号引用转换成直接引用（这一步是可选的）
+3.初始化：初始化静态变量，静态代码块。
+https://www.cnblogs.com/Qian123/p/5707562.html
+
+
+
+----如何实现对象克隆
+？？为什么需要克隆对象？直接new一个对象不行吗？
+	克隆的对象可能包含一些已经修改过的属性，而new出来的对象的属性都还是初始化时候的值，所以当需要一个新的对象来保存当前对象的“状态”就靠clone方法了。那么我把这个对象的临时属性一个一个的赋值给我新new的对象不也行嘛？可以是可以，但是一来麻烦不说，二来，大家通过上面的源码都发现了clone是一个native方法，就是快啊，在底层实现的。
+	通过clone方法赋值的对象跟原来的对象是同时独立存在的。
+	克隆分为浅克隆（ShallowClone）和深克隆（DeepClone）。
+	在Java语言中，数据类型分为值类型（基础数据类型）和引用类型，值类型包括int、double、byte、boolean、char等基本数据类型，引用类型包括类、接口、数组等复杂类型。
+	浅克隆和深克隆的主要区别在于师傅支持引用类型的成员变量的复制。
+	浅克隆：
+	1.被复制的类需要实现Cloneable接口（不实现的话在调用clone方法会抛出CloneNotSupportedException异常），该接口为标记接口（不含任何方法）
+	2.覆盖clone()方法，访问修饰符设为public。方法中调用super.clone()方法得到需要的复制对象。（native为本地方法）
+	在浅克隆中，如果原型对象的成员变量是值类型，将复制一份给克隆对象；如果原型对象的成员变量是引用类型，则将引用对象的地址复制一份给克隆对象，也就是说原型对象和克隆对象的成员变量指向相同的内存地址。
+	在Java中，通过覆盖Object类的clone()方法可以实现浅克隆。
+	在深克隆中，无论原型对象的成员变量是值类型还是引用类型，都将复制一份给克隆对象，深克隆将原型对象的所有引用对象也将复制一份给克隆对象。
+	在Java中，如果需要实现深克隆，可以通过覆盖Object类的clone()方法实现，也可以通过序列化(Serialization)等方式来实现。
+	(如果引用类型里面还包含很多引用类型，或者内层引用类型的类里面又包含引用类型，使用clone方法就会很麻烦。这时我们可以使用序列化的方式来实现对象的深克隆。)
+	Java提供的Cloneable接口和Serializable接口都是空接口，也称为标识接口，标识接口中没有任何方法的定义，其作用是告诉JRE这些接口的实现类是否具有某个功能，如是否支持克隆、是否支持序列化等。
+实现对象克隆有两种方式：
+	1).实现Cloneable接口并重写Object类中的clone()方法；
+	2).实现Serializable接口，通过对象的序列化和反序列化实现克隆，可是实现真正的深度克隆。
+注意：给予序列化和反序列化实现的克隆不仅仅是深度克隆，更重要的是通过泛型限定，可以检查出要克隆的对象是否支持序列化，这项检查时编译器完成的，不是在运行时抛出异常，这种方案明显优于使用Object类的clone方法克隆对象。让问题在编译的时候暴露出来总是优于把问题留到运行时。
+http://www.cnblogs.com/Qian123/p/5710533.html
+
+
+
+----日期和时间：
+-如何取得年月日、小时分钟秒？
+-如何取得从1970年1月1日0时0分0秒到现在的毫秒数？
+-如何取得某月的最后一天？
+-如何格式化日期？
+问题一：创建java.util.Calendar实例，调用其get()方法传入不同的参数即可获得所对应的值。Java8中可以使用java.time.LocalDateTime来获取，代码如下所示。
+public class DateTimeTest{
+	public static void main(String[] args){
+		Calendar cal=Calendar.getInstance();
+		System.out.println(cal.get(Calendar.YEAR));
+		System.out.println(cal.get(Calendar.MONTH));//0-11
+		System.out.println(cal.get(Calendar.DATE));
+		System.out.println(cal.get(Calendar.HOUR_OF_DAY));
+		System.out.println(cal.get(Calendar.MINUTE));
+		System.out.println(cal.get(Calendar.SECOND));
+		
+		//Java8 
+		LocalDateTime ldt=LocalDateTime.now();
+		System.out.println(ldt.getYear));
+		System.out.println(ldt.getMonthValue());//1-12
+		System.out.println(ldt.getDayOfMonth());
+		System.out.println(ldt.getHour());
+		System.out.println(ldt.getMinute());
+		System.out.println(ldt.getSecond());
+	}
+}
+问题二：以下方法均可获得该毫秒数。
+Calendar.getInstance().getTimeInMillis();
+System.currentTimeMillis();
+Clock.systemDefaultZone().millis();//Java8
+问题三：代码如下所示。
+Calendar cal=Calendar.getInstance();
+cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+问题四：利用java.text.DataFormat的子类（如SimpleDateFormat类）中的format(Date)方法可将日期格式化。Java8中可用java.time.format.DateTimeFormatter来格式化时间日期，代码如下所示。
+class DateFormatTest{
+	public static void main(String[] args){
+		SimpleDateformat oldFormatter=new SimpleDateformat("yyyy/MM/dd");
+		Date date1=new Date();
+		System.out.println(oldFormatter.format(date1));
+		
+		//Java8
+		DateTimeFormatter newFormatter=DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		LocalDate date2=LocalDate.now();
+		System.out.println(date2.format(newFormatter));
+	}
+}
+补充：Java的时间日期API一直以来都是被诟病的东西，为了解决这一问题，Java 8中引入了新的时间日期API，其中包括LocalDate、LocalTime、LocalDateTime、Clock、Instant等类，这些的类的设计都使用了不变模式，因此是线程安全的设计。
+
+
+
+----阐述final、finally、finalize的区别.
+final:
+	修饰变量，如果是基本数据类型的变量，则其数值一旦在初始化之后便不能更改；如果是引用类型的变量，则在对其初始化之后便不能再让其指向另一个对象。
+	修饰类，则意味着它不能再派生出新的子类，即不能被继承，因此final和abstract是反义词。
+	修饰方法，则该方法不能在子类中被重写。
+finally:
+	需与try组合使用(try{...}finally{...}),finally代码块总是执行，这意味着程序无论正常执行还是发生异常，这里的代码只要JVM不关闭都能执行，可以将释放外部资源的代码写在finally块中。
+finalize:
+	Object类中定义的方法，Java中允许使用finalize()方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。这个方法是由垃圾收集器在销毁对象时调用的，通过重写finalize()方法可以整理系统资源或者执行其他清理工作。
+
+
+
+----请说出与线程同步以及线程调度相关的方法。	
+wait():使一个线程等待（阻塞）状态，并且释放所持有的对象的锁；
+sleep():使一个正在运行的线程处于睡眠状态，是一个静态方法，调用此方法要处理InterruptedException异常；
+notify():唤醒一个处于等待状态的线程，当然在调用此方法的时候，并不能确切的唤醒某一个等待状态的线程，而是由JVM确定唤醒哪个线程，而且与优先级无关；
+notifyAll():唤醒所有处于等待状态的线程，该方法并不是将对象的锁给所有线程，而是让它们竞争，只有获得锁的线程才能进入就绪状态；
+
+
+
+----编写多线程程序有几种实现方法？
+Java多线程实现方式主要有三种：
+	继承Thread类、
+	实现Runnable接口、
+	使用ExecutorService、Callabl、Future实现有返回结果的多线程。
+	其中前两种方式线程执行完后都没有返回值，只有最后一种是带返回值的。
+http://www.cnblogs.com/yezhenhan/archive/2012/01/09/2317636.html
+
+
+
+----简述一下你了解的设计模式。
+所谓设计模式，就是一套被反复使用的代码设计经验的总结（情境中一个问题经过证实的一个解决方案）。
+使用设计模式是为了可重用代码、让代码更容易被他人理解、保证代码可靠性。设计模式使人们可以更加简单方便的服用成功的设计和体系结构。将已证实的技术表述成设计模式也会使新系统开发者更加容易理解其设计思路。
+https://www.cnblogs.com/foryang/p/5849402.html
+
+
+
+----如何用Java代码列出一个目录下所有的文件？
+import java.io.File;
+public class test{
+	public static void main(String[] args){
+		File file=new File("E:"+File.separator);
+		list(file);
+	}
+	public static void list(File file){
+		if(file.isDirectory()){
+			File[] lists=file.listFiles();
+			if(lists!=null){
+				for(int i=0;i<lists.length;i++){
+					list(lists[i]);
+				}
+			}
+		}
+		System.out.println(file);
+	}
+}
+https://blog.csdn.net/zhouzixin053/article/details/22090775
+目录文件夹
+File file=new File("H:\\");
+for(File temp:file.listFiles()){//Java5的新特性之一就是增强的for循环。
+	//上面的for循环的意思是：定义一个File的变量temp，变量temp会自动递增遍历File类型的数组listFiles   
+	//我们不再需要写得像原来那么复杂了，数组、迭代器都可以这样使用，
+    if(temp.isDirectory()){
+        System.out.println(temp.toString());
+    } 
+}
+文件
+File file=new File("H:\\");
+for(File temp:file.listFiles()){
+    if(temp.isFile()){
+        System.out.println(temp.toString());
+    }   
+}
+
+
+
+----用Java写一个冒泡排序
+public class BubbleSort {
+	public static void main(String[] args){
+		int[] arr={6,3,8,2,9,1};
+		sort(arr);
+	}
+	
+	public static void sort(int[] arr){
+		System.out.println("排序前数组为：");
+		for(int num:arr){
+			System.out.print(num+" ");
+		}
+		System.out.println();
+		for(int i=0;i<arr.length-1;i++){//外层循环控制排序趟数
+			for(int j=0;j<arr.length-1-i;j++){//内层循环控制每一趟排序多少次
+				if(arr[j]>arr[j+1]){
+					int temp=arr[j];
+					arr[j]=arr[j+1];
+					arr[j+1]=temp;
+				}
+			}
+		}
+		System.out.println("排序后数组为：");
+		for(int num:arr){
+			System.out.print(num+" ");
+		}
+	}
+}
